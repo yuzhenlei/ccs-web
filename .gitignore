@@ -1,0 +1,5 @@
+.idea
+.project
+vendor
+composer.lock
+Config/Db.php
