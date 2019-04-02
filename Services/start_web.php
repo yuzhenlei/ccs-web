@@ -16,15 +16,13 @@ $web->reusePort = true;
 $web->addRoot('www.ccs.com', __CCS_ROOT__.'/Web/Public');
 
 $web->onWorkerStart = function ($web) {
-    require_once __CCS_ROOT__ . '/Web/Autoloader.php';
-    foreach(glob(__CCS_ROOT__ . '/Lib/*.php') as $require_file)
-    {
-        require_once $require_file;
-    }
+    require_once __CCS_ROOT__ . '/Autoloader.php';
+    \Ccs\Autoloader::setRootPath(__CCS_ROOT__);
     foreach(glob(__CCS_ROOT__ . '/Web/Config/*.php') as $require_file)
     {
         require_once $require_file;
     }
+    \Ccs\Lib\Config::import(require_once __CCS_ROOT__ . '/config.php');
 };
 
 

@@ -6,7 +6,7 @@
  * Time: 10:29
  */
 
-namespace Common\Lib;
+namespace Ccs\Lib;
 
 use Redis;
 
@@ -18,7 +18,7 @@ class CRedis
     private static function connect()
     {
         self::$redisCli = new Redis();
-        self::$redisCli->connect(C_REDIS_HOST, C_REDIS_PORT, 3);
+        self::$redisCli->connect(Config::get('redis_host'), Config::get('redis_port'), 3);
     }
 
     /**

@@ -5,7 +5,7 @@
  * Date: 2019/3/19
  * Time: 16:42
  */
-namespace Web\Util;
+namespace Ccs\Web\Util;
 
 class TextUtil
 {

@@ -1,13 +1,11 @@
 <?php
+namespace Ccs\Web\Config;
 
-use Web\Lib\Router;
+use Ccs\Web\Lib\Router;
 
-Router::setBasePath(__CCS_ROOT__ . '/Web/');
+// [uri, http-method, controller | callable, method | null]
 
-Router::setNamespace('\\Web\\App\\Controller\\');
-
-Router::register([
-    // [uri, http-method, controller | callable, method | null]
-    ['/', 'GET', 'Hello', 'world'],
-    ['hello', 'GET', 'Hello', 'world'],
-]);
+// uri: www.example.com
+Router::register(['/', 'GET', \Ccs\Web\App\Controller\Hello::class, 'world']);
+// uri: www.example.com/hello/tom
+Router::register(['hello/{name}', 'GET', \Ccs\Web\App\Controller\Hello::class, 'world']);

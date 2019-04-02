@@ -1,74 +1,157 @@
 <?php
-namespace Web\Lib;
 
-use Web\Util\TextUtil;
+namespace Ccs\Web\Lib;
+
+use Ccs\Lib\Console;
+use Ccs\Web\Util\TextUtil;
 
 class Request
 {
-    private static $method = null;
+    private $route = null;
 
-    private static $uri = null;
+    private $method = null;
 
-    private static $contentType = null;
+    private $uri = null;
 
-    private static $contentLength = null;
+    private $contentType = null;
 
-    private static $queryString = null;
+    private $contentLength = null;
 
-    public static function extract()
+    private $queryString = null;
+
+    private $uid = null;
+
+    private $token = null;
+
+    private function __construct()
     {
-        self::setMethod($_SERVER['REQUEST_METHOD']);
-        self::setUri($_SERVER['REQUEST_URI']);
-        if (in_array(self::getMethod(), ['POST', 'PUT'])) {
-            self::setContentType($_SERVER['CONTENT_TYPE'] ?: $_SERVER['HTTP_CONTENT_TYPE']);
-            self::setContentLength($_SERVER['CONTENT_LENGTH'] ?: $_SERVER['HTTP_CONTENT_LENGTH']);
+        $this->setMethod($_SERVER['REQUEST_METHOD']);
+        $this->setUri($_SERVER['REQUEST_URI']);
+        if (in_array($this->getMethod(), ['POST', 'PUT'])) {
+            $this->setContentType($_SERVER['CONTENT_TYPE'] ?: $_SERVER['HTTP_CONTENT_TYPE']);
+            $this->setContentLength($_SERVER['CONTENT_LENGTH'] ?: $_SERVER['HTTP_CONTENT_LENGTH']);
         }
-        self::setQueryString($_SERVER['QUERY_STRING']);
+        $this->setQueryString($_SERVER['QUERY_STRING']);
+        $this->setUid(isset($_SERVER['HTTP_CCS_AUTH_UID']) ? $_SERVER['HTTP_CCS_AUTH_UID'] : 0);
+        $this->setToken(isset($_SERVER['HTTP_CCS_AUTH_TOKEN']) ? $_SERVER['HTTP_CCS_AUTH_TOKEN'] : null);
     }
 
-    private static function setMethod($string)
+    public static function instance()
     {
-        self::$method = strtoupper($string);
+        $request = new self();
+        return $request;
     }
-    private static function setUri($string)
+
+    private function setMethod($string)
+    {
+        $this->method = strtoupper($string);
+    }
+
+    private function setUri($string)
     {
         $subStrEnd = stripos($string, '?');
         if ($subStrEnd !== false) {
             $string = substr($string, 0, $subStrEnd);
         }
-        self::$uri = TextUtil::filterSlash($string);
+        $this->uri = self::filterMultiSlash($string);
     }
-    private static function setQueryString($string) 
+
+    private function setQueryString($string)
     {
-        $string = substr($string, stripos($string, '?') + 1);
-        self::$queryString = explode('&', $string);
+        parse_str($string, $this->queryString);
     }
-    private static function setContentType($string)
+
+    private function setContentType($string)
     {
-        self::$contentType = $string;
+        $this->contentType = $string;
     }
-    private static function setContentLength($string)
+
+    private function setContentLength($string)
     {
-        self::$contentLength = $string;
+        $this->contentLength = $string;
     }
-    public static function getMethod()
+
+    private function setUid($uid)
     {
-        return self::$method;
+        $this->uid = intval($uid);
     }
-    public static function getUri()
+
+    private function setToken($token)
     {
-        return self::$uri;
+        $this->token = $token;
     }
-    public static function getContentType()
+
+    public function setQueryParam($key, $value)
     {
-        return self::$contentType;
+        $this->queryString[$key] = $value;
     }
-    public static function getContentLength()
+
+    public function getMethod()
     {
-        return self::$contentLength;
+        return $this->method;
     }
-    public static function getQueryString($key)
+
+    public function getUri()
     {
-        return self::$queryString[$key];
+        return $this->uri;
+    }
+
+    public function getContentType()
+    {
+        return $this->contentType;
+    }
+
+    public function getContentLength()
+    {
+        return $this->contentLength;
+    }
+
+    public function getQueryString($key)
+    {
+        if (key_exists($key, $this->queryString)) {
+            return $this->queryString[$key];
+        }
+        return null;
+    }
+
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    public function bindRoute(Route $route)
+    {
+        $this->route = $route;
+    }
+
+    /**
+     * @return null|Route
+     */
+    public function getRoute()
+    {
+        return $this->route;
+    }
+
+    public function getUriSubPath()
+    {
+        return empty($this->uri) ? [''] : explode('/', $this->uri);
+    }
+
+    // 替换给定字符串中双/多'/'为单'/'，并且过滤两侧斜杠
+    protected static function filterMultiSlash($string)
+    {
+        if (empty($string)) {
+            return $string;
+        }
+        do {
+            $string = str_replace('//', '/', $string);
+        } while (strpos($string, '//') !== false);
+        $string = trim($string, '/');
+        return $string;
     }
 }

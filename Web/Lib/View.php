@@ -1,5 +1,5 @@
 <?php
-namespace Web\Lib;
+namespace Ccs\Web\Lib;
 
 use Exception;
 
@@ -16,12 +16,13 @@ class View
 
     /**
      * @param $file_path
+     * @param $cache bool
      * @return bool|mixed|string
      * @throws Exception
      */
-    public static function display(string $file_path, $isCache = true)
+    public static function display(string $file_path, $cache = true)
     {
-        if ($isCache && isset(self::$templateCache[$file_path])) {
+        if ($cache && isset(self::$templateCache[$file_path])) {
             return self::$templateCache[$file_path];
         }
         if (!file_exists($file_path)) {
@@ -31,7 +32,7 @@ class View
         if ($content === false) {
             throw new Exception("File: {$file_path} open failed");
         }
-        if ($isCache) {
+        if ($cache) {
             self::$templateCache[$file_path] = $content;
         }
         return $content;

@@ -20,10 +20,16 @@ const GLOBAL_START = 1;
 // 设置项目根路径
 const __CCS_ROOT__ = __DIR__;
 
-// 常量配置文件
-require_once __DIR__ . '/config.php';
+// 常量配置
+// 系统Web路径
+const __CCS_WEB_PATH__ = __CCS_ROOT__ . '/Web/';
+// 系统Web下的静态文件页面路径
+const __CCS_STATIC_PATH__ = __CCS_WEB_PATH__ . '/Public/static/';
+// 服务注册中心 端口
+const C_REGISTER_PORT = '1236';
 
 require_once __DIR__ . '/vendor/autoload.php';
+
 // 加载所有services/start*.php，以便启动所有服务
 foreach(glob(__DIR__.'/Services/start*.php') as $start_file)
 {

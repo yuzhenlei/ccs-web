@@ -5,6 +5,7 @@
     "require": {
         "php": ">=7.2",
         "ext-redis": "*",
+        "ext-json": "*",
         "workerman/gateway-worker": ">=3.0"
     },
     "license": "MIT",

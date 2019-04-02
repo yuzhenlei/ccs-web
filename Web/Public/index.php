@@ -1,12 +1,12 @@
 <?php
 
-use Web\Lib\Request;
-use Web\Lib\Router;
+use Ccs\Web\Lib\Request;
+use Ccs\Web\Lib\Router;
 use Workerman\Protocols\Http;
 
-//echo json_encode($_SERVER);
-Request::extract();
-//var_dump(Request::getUri());
-Http::end(Router::locate(Request::getUri(), Request::getMethod()));
+//开启session
+//Http::sessionStart();
+$request = Request::instance();
+Http::end(Router::locate($request));
 
 

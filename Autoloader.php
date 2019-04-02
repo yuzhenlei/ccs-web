@@ -1,5 +1,5 @@
 <?php
-namespace Web;
+namespace Ccs;
 
 /**
  * Autoload.
@@ -33,8 +33,8 @@ class Autoloader
     public static function loadByNamespace($name)
     {
         $class_path = str_replace('\\', DIRECTORY_SEPARATOR, $name);
-        if (strpos($name, 'Web\\') === 0) {
-            $class_file = __DIR__ . substr($class_path, strlen('Web')) . '.php';
+        if (strpos($name, 'Ccs\\') === 0) {
+            $class_file = __DIR__ . substr($class_path, strlen('Ccs')) . '.php';
         } else {
             if (self::$_autoloadRootPath) {
                 $class_file = self::$_autoloadRootPath . DIRECTORY_SEPARATOR . $class_path . '.php';
@@ -54,4 +54,4 @@ class Autoloader
     }
 }
 
-spl_autoload_register('\Web\Autoloader::loadByNamespace');
+spl_autoload_register('\Ccs\Autoloader::loadByNamespace');

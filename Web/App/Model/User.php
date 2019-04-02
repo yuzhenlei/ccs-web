@@ -5,11 +5,11 @@
  * Date: 2019/3/19
  * Time: 19:13
  */
-namespace Web\App\Model;
+namespace Ccs\Web\App\Model;
 
-use Common\Lib\Console;
-use GatewayWorker\Lib\Db;
-use Common\Lib\CRedis;
+use Ccs\Lib\Console;
+use Ccs\Lib\Db;
+use Ccs\Lib\CRedis;
 
 class User
 {
